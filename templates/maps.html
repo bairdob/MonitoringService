@@ -1,13 +1,55 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <div id="map" style="height: 400px; width: 600px;"></div>
+    <style>
+
+/*        #map{
+          width:100%;
+          height:1000px;
+        }*/
+
+/*        .custom-popup .leaflet-popup-content-wrapper {
+          background:#2c3e50;
+          color:#fff;
+          font-size:16px;
+          line-height:24px;
+          border-radius: 0px;
+          }
+        .custom-popup .leaflet-popup-content-wrapper a {
+            color:rgba(255,255,255,0.1);
+          }
+        .custom-popup .leaflet-popup-tip-container {
+          width:30px;
+          height:15px;
+          }
+        .custom-popup .leaflet-popup-tip {
+            background: transparent;
+            border: none;
+            box-shadow: none;
+          }*/
+
+            .leaflet-popup-close-button {
+        display:none;
+    }
+
+    .leaflet-label-overlay {
+        line-height:0px;
+        margin-top: 9px;
+        position:absolute;
+    }
+
+    </style>
+    <div class='custom-popup' id="map" style="height: 400px; width: 600px;"></div>
+    <script src="{{url_for('static', filename='scripts/dist/leaflet.markercluster-src.js')}}"></script>
+    <script src="{{url_for('static', filename='scripts/dist/leaflet.labeloverlay.js')}}"></script>
     <script src="{{url_for('static', filename='scripts/maps.js')}}"></script>
 
-                <div>
-                    <h3>Результат запроса<h3>
-                    <p><textarea id="message" name="message"></textarea></p>
-                </div>      
+    
+
+    <div>
+        <h3>Результат запроса<h3>
+        <p><textarea id="message" name="message"></textarea></p>
+    </div>      
 {% endblock %}
 
 
