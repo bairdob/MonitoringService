@@ -4,22 +4,115 @@
     <style>
 
         .leaflet-popup-close-button {
-            display:none;
+            display: none;
         }
 
+        html, p, .table {
+            font-size: 14px;
+        }
+
+        textarea {
+            font-size: 14px;
+            width: 100%;
+            height: 60px;
+        }
+
+
     </style>
-
-    <div id="map" style="height: 400px; width: 100%;"></div>
-    <script src="{{url_for('static', filename='scripts/dist/leaflet.markercluster-src.js')}}"></script>
-    <!-- <script src="{{url_for('static', filename='scripts/dist/leaflet.labeloverlay.js')}}"></script> -->
-    <script src="{{url_for('static', filename='scripts/maps.js')}}"></script>
-
     
+    <div class="container">
+        <div class="container row">
+                <div class="col-7">
+                    <div>
+                        <div>
+                            <h3>Система мониторинга климатических параметров</h3>
 
-    <div>
-        <h3>Результат запроса<h3>
-        <p><textarea id="message" name="message"></textarea></p>
-    </div>      
+                            <p class="text-muted">Проект Интернета вещей (IoT) для сбора, обработки, хранения и отображения (на карте) показаний датчиков</p>
+
+                        </div>
+                        <div>
+                            <b>1. Получение показаний c датчиков</b> 
+
+                            <p class="text-muted">Функция возвращает данные в формате JSON</p>
+                                                    <p>
+                              <a class="btn btn-primary btn-sm" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+                                Формат возвращаемых данных JSON
+                              </a>
+                            </p>
+                            <div class="collapse" id="collapseExample">
+                              <div class="card card-body">
+                                <code>
+                                    {<br>
+
+                                    &nbsp;&nbsp;"<b>devices</b>": [<br>
+
+                                    &nbsp;&nbsp;&nbsp;&nbsp;{<br>
+
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"<b>mac</b>": "DEVICE_MAC", // уникальный для проекта серийный номер прибора;<br>
+
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"name": "DEVICE NAME", // название прибора в кодировке UTF-8;<br>
+
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"lat": 55.800918, // широта места установки прибора;<br>
+
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"lon": 37.535767, // долгота места установки прибора;<br>
+
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"<b>sensors</b>": [<br>
+
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"<b>id</b>": "T1", // метрика датчика, уникальная для прибора;<br>
+
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"name": "SENSOR NAME", // название датчика в кодировке UTF-8;<br>
+
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"<b>value</b>": 00.00, // показание датчика;<br>
+
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"unit": "C", // единица измерения для датчика в UTF-8;<br>
+
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;},<br>
+
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // прочие датчики на приборе<br>
+
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]<br>
+
+                                    &nbsp;&nbsp;&nbsp;&nbsp;},<br>
+
+                                    &nbsp;&nbsp;&nbsp;&nbsp;{<br>
+
+                                    &nbsp;&nbsp;&nbsp;&nbsp;// прочие приборы<br>
+
+                                    &nbsp;&nbsp;&nbsp;&nbsp;}<br>
+
+                                    &nbsp;&nbsp;]<br>
+
+                                    }
+                                </code>
+                              </div>
+                            </div>
+                            <b>URL: </b><span class="text-danger" style="background-color: #ffddee;">/json </span>
+
+                            <p><b>Пример: </b><a href="{{ url_for('json') }}">{{ url_for('json', _external=True) }}</a></p>
+            
+                            <p>
+                                <b>Результат запроса</b>
+                                <textarea id="message" name="message"></textarea>
+                            </p>
+                        </div>
+                    </div>                              
+                </div>
+
+                <div class="col-5">
+                    <div id="map" style="height: 400px; width: 100%;"></div>
+                </div>
+
+        </div>
+    </div>
+   
+    <script src="{{url_for('static', filename='scripts/dist/leaflet.markercluster-src.js')}}"></script>
+    <script src="{{url_for('static', filename='scripts/maps.js')}}"></script>  
 {% endblock %}
 
 

@@ -13,6 +13,11 @@ username = ''
 password = ''
 url = 'http://127.0.0.1:5000/publish'
 
+json_text = '{ "devices": [{ "mac": "MAC", "name": "305", "sensors": [{ "id": "T1", "value": 25.50, "unit": "°C"} ]} ]}'
+
+def genJson():
+    return '{ "devices": [{ "mac": "MAC", "name": "305", "sensors": [{ "id": "T1", "value": ' + str(round(random.uniform(20.0, 30.0), 2)) + ', "unit": "°C"} ]} ]}'
+
 def connect_mqtt():
     def on_connect(client, userdata, flags, rc):
         if rc == 0:
@@ -31,8 +36,9 @@ def publish(client):
     msg_count = 0
     while True:
         time.sleep(1)
-        msg = f"temperature: {msg_count}"
-        requests.post(url, json = {"topic": "/flask/mqtt", "msg": msg})
+        # msg = f"temperature: {msg_count}"
+        msg = genJson()
+        # requests.post(url, json = {"topic": "/flask/mqtt", "msg": msg})
         result = client.publish(topic, msg)
         # result: [0, 1]
         status = result[0]

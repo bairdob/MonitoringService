@@ -50,11 +50,11 @@ def publish_message():
     publish_result = mqtt_client.publish(request_data['topic'], request_data['msg'])
     return jsonify({'code': publish_result[0]})
 
-@app.route('/_stuff', methods = ['GET'])
-def stuff():
+@app.route('/json', methods = ['GET'])
+def json():
     global mqtt_json 
 
-    return jsonify(message=mqtt_json)
+    return (mqtt_json)
 
 if __name__ == '__main__':
     app.run(debug=True)
