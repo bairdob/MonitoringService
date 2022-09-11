@@ -21,10 +21,13 @@ mqtt_json = ''
 def index():
     return redirect(url_for('maps'))
 
-
 @app.route('/maps', methods=['GET', 'POST'])
 def maps() -> 'html': 
     return render_template('maps.html')
+
+@app.route('/mapsfull', methods=['GET'])
+def mapsFull() -> 'html': 
+    return render_template('mapsFullScreen.html')
 
 @mqtt_client.on_connect()
 def handle_connect(client, userdata, flags, rc):
