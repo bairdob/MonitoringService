@@ -33,50 +33,48 @@
                         <div>
                             <b>1. Получение показаний c датчиков</b> 
 
-                            <p class="text-muted">Функция возвращает данные в формате JSON</p>
+                            <p class="text-muted">Функция возвращает данные в формате GeoJSON</p>
                                                     <p>
                               <a class="btn btn-primary btn-sm" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
-                                Формат возвращаемых данных JSON
+                                Формат возвращаемых данных GeoJSON
                               </a>
                             </p>
                             <div class="collapse" id="collapseExample">
                               <div class="card card-body">
                                 <code>
-                                    {<br>
+                                    { "type": "FeatureCollection", <br>
 
-                                    &nbsp;&nbsp;"<b>devices</b>": [<br>
+                                    &nbsp;&nbsp;"features": [<br>
 
                                     &nbsp;&nbsp;&nbsp;&nbsp;{<br>
 
-                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"<b>mac</b>": "DEVICE_MAC", // уникальный для проекта серийный номер прибора;<br>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"<b>type</b>": "Feature",<br>
 
-                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"name": "DEVICE NAME", // название прибора в кодировке UTF-8;<br>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"<b>geometry</b>": <br>
 
-                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"lat": 55.800918, // широта места установки прибора;<br>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br>
 
-                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"lon": 37.535767, // долгота места установки прибора;<br>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"type": "Point",<br>
 
-                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"<b>sensors</b>": [<br>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"coordinates": [0.0, 0.0]<br>
 
-                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;},<br>
 
-                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"<b>id</b>": "T1", // метрика датчика, уникальная для прибора;<br>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"<b>properties</b>": <br>
 
-                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"name": "SENSOR NAME", // название датчика в кодировке UTF-8;<br>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br>
 
-                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"<b>value</b>": 00.00, // показание датчика;<br>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"mac": "DEVICE_MAC", // уникальный для проекта серийный номер прибора;<br>
 
-                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"unit": "C", // единица измерения для датчика в UTF-8;<br>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"name": "DEVICE NAME", // название прибора в кодировке UTF-8;<br>
 
-                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;},<br>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"temperature": 12.34, // показание датчика;<br>
 
-                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"humidity": 12.34 // leaflet popup<br>
 
-                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // прочие датчики на приборе<br>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // прочие свойства датчика;<br>
 
-                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
-
-                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]<br>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
 
                                     &nbsp;&nbsp;&nbsp;&nbsp;},<br>
 
