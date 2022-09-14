@@ -8,9 +8,9 @@
 #define WIFI_PASSWORD "bair457589"
 
 // Raspberri Pi Mosquitto MQTT Broker
-//#define MQTT_HOST IPAddress(192, 168, 1, 39)
+#define MQTT_HOST IPAddress(192, 168, 1, 39)
 // For a cloud MQTT broker, type the domain name
-#define MQTT_HOST "broker.emqx.io"
+//#define MQTT_HOST "broker.emqx.io"
 #define MQTT_PORT 1883
 
 // Temperature MQTT Topics
@@ -153,9 +153,9 @@ void loop() {
     StaticJsonDocument<200> geoJsonFeature;
     geoJsonFeature["type"] = "Feature";
     geoJsonFeature["geometry"]["type"] = "Point";
-    JsonArray coordinates = geoJsonFeature.createNestedArray("coordinates");
-    coordinates.add(LAT);
-    coordinates.add(LNG); // "coordinates":[1.0,1.0]
+    JsonArray coordinates = geoJsonFeature["geometry"].createNestedArray("coordinates");
+    coordinates.add(1.0);
+    coordinates.add(1.0); // "coordinates":[1.0,1.0]
     geoJsonFeature["properties"]["mac"] = DEVICE_MAC;
     geoJsonFeature["properties"]["name"] = DEVICE_NAME; 
     geoJsonFeature["properties"]["temperature"] = temp;
