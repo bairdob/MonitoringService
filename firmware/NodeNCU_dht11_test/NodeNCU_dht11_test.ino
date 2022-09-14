@@ -2,19 +2,18 @@
 #include <ESP8266WiFi.h>
 #include <Ticker.h>
 #include <AsyncMqttClient.h>
+#include <ArduinoJson.h>
 
 #define WIFI_SSID "Keenetic-3556"
 #define WIFI_PASSWORD "bair457589"
 
 // Raspberri Pi Mosquitto MQTT Broker
-#define MQTT_HOST IPAddress(192, 168, 1, 39)
+//#define MQTT_HOST IPAddress(192, 168, 1, 39)
 // For a cloud MQTT broker, type the domain name
-//#define MQTT_HOST "broker.emqx.io"
+#define MQTT_HOST "broker.emqx.io"
 #define MQTT_PORT 1883
 
 // Temperature MQTT Topics
-#define MQTT_PUB_TEMP "/flask/mqtt"
-#define MQTT_PUB_HUM "/flask/mqtt"
 #define MQTT_PUB_TOPIC "/flask/mqtt"
 
 // Digital pin connected to the DHT sensor
@@ -25,16 +24,24 @@
 //#define DHTTYPE DHT22   // DHT 22  (AM2302), AM2321
 //#define DHTTYPE DHT21   // DHT 21 (AM2301)
 
+//geoJSON settings
+#define DEVICE_MAC "DEVICE_MAC"
+#define DEVICE_NAME "DEVICE_NAME"
+#define LAT 1.0
+#define LNG 1.0
+
+
 // Initialize DHT sensor
 DHT dht(DHTPIN, DHTTYPE);
 
 // Variables to hold sensor readings
-float temp;
-float hum;
+int temp;
+int hum;
 
 // Variables to hold JSON
-String JSON_start = "{ \"devices\": [{ \"mac\": \"MAC\", \"name\": \"305\", \"sensors\": [{ \"id\": \"T1\", \"value\": ";
-String JSON_end = ", \"unit\": \"%\"} ]} ]}";
+String JSON_start = "{\"type\":\"Feature\",\"geometry\":{\"type\":\"Point\",\"coordinates\":[0,0]},\"properties\":{\"mac\":\"DEVICE_MAC\",\"name\":\"DEVICE_NAME\",\"temperature\":";
+String JSON_mid = ",\"humidity\":";
+String JSON_end = "}}";
 String JSON_result = "";
 
 AsyncMqttClient mqttClient;
@@ -102,10 +109,11 @@ void onMqttPublish(uint16_t packetId) {
   Serial.println(packetId);
 }
 
+
 void setup() {
   Serial.begin(115200);
   Serial.println();
-
+  
   dht.begin();
   
   wifiConnectHandler = WiFi.onStationModeGotIP(onWifiConnect);
@@ -125,7 +133,7 @@ void setup() {
 
 void loop() {
   unsigned long currentMillis = millis();
-  // Every X number of seconds (interval = 10 seconds) 
+  // Every X number of seconds (interval = 1 seconds) 
   // it publishes a new MQTT message
   if (currentMillis - previousMillis >= interval) {
     // Save the last time a new reading was published
@@ -136,21 +144,25 @@ void loop() {
     temp = dht.readTemperature();
     // Read temperature as Fahrenheit (isFahrenheit = true)
     //temp = dht.readTemperature(true);
-    
-    // Publish an MQTT message on topic esp/dht/temperature
-//    uint16_t packetIdPub1 = mqttClient.publish(MQTT_PUB_TEMP, 1, true, String(temp).c_str());                            
-//    Serial.printf("Publishing on topic %s at QoS 1, packetId: %i ", MQTT_PUB_TEMP, packetIdPub1);
-//    Serial.printf("Message: %.2f \n", temp);
+  
+    // Publish an MQTT message JSON on topic /flask/mqtt
+//    JSON_result = JSON_start + String(temp) + JSON_mid + String(hum)+ JSON_end;
+//    uint16_t packetIdPub3 = mqttClient.publish(MQTT_PUB_TOPIC, 1, true, JSON_result.c_str());
+//    Serial.printf("%s\n", JSON_result.c_str());
 
-    // Publish an MQTT message on topic esp/dht/humidity
-//    uint16_t packetIdPub2 = mqttClient.publish(MQTT_PUB_HUM, 1, true, String(hum).c_str());                            
-//    Serial.printf("Publishing on topic %s at QoS 1, packetId %i: ", MQTT_PUB_HUM, packetIdPub2);
-//    Serial.printf("Message: %.2f \n", hum);
-    
-    // Publish an MQTT message JSON
-    JSON_result = JSON_start + String(hum) + JSON_end;
-    uint16_t packetIdPub3 = mqttClient.publish(MQTT_PUB_TOPIC, 1, true, JSON_result.c_str());
-    Serial.printf("{ \"devices\": [{ \"mac\": \"MAC\", \"name\": \"305\", \"sensors\": [{ \"id\": \"T1\", \"value\": %.2f, \"unit\": \"°C\"} ]} ]}\n", hum);
-
+    StaticJsonDocument<200> geoJsonFeature;
+    geoJsonFeature["type"] = "Feature";
+    geoJsonFeature["geometry"]["type"] = "Point";
+    JsonArray coordinates = geoJsonFeature.createNestedArray("coordinates");
+    coordinates.add(LAT);
+    coordinates.add(LNG); // "coordinates":[1.0,1.0]
+    geoJsonFeature["properties"]["mac"] = DEVICE_MAC;
+    geoJsonFeature["properties"]["name"] = DEVICE_NAME; 
+    geoJsonFeature["properties"]["temperature"] = temp;
+    geoJsonFeature["properties"]["humidity"] = hum; 
+    String json_string;
+    serializeJson(geoJsonFeature, json_string);
+    uint16_t packetIdPub4 = mqttClient.publish(MQTT_PUB_TOPIC, 1, true, json_string.c_str());
+    Serial.printf("%s\n", json_string.c_str());
   }
 }
