@@ -35,39 +35,71 @@ map.on('layeradd', function(event) {
   
 });
 
+// Creating cluster group
+var clusterLayer = L.markerClusterGroup();
 
 var intervalID = setInterval(update_message,1000);
-function update_message(event){    
 
+function update_message(event){    
     let url = 'http://' + window.location.host + '/json';
-    
+
     let xhr = new XMLHttpRequest();
     xhr.open("GET", encodeURI(url));
     xhr.send();
     xhr.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
             let obj = JSON.parse(this.responseText);
-            let data = obj.devices[0].sensors[0];
-            // console.log(obj['devices'][0]);
-            room305.setContent(data.value.toString()+data.unit);
-            room305.update();
+            // let obj = {"type":"Feature","geometry":{"type":"Point","coordinates":[0,0]},"properties":{"mac":"DEVICE_MAC","name":"DEVICE NAME","temperature":10.1,"humidity":12.34}};
+            // let obj = {"type": "FeatureCollection", "features": [{"type": "Feature", "geometry": {"type": "Point", "coordinates": [0, 0]}, "properties": {"mac": "DEVICE_MAC1", "name": "DEVICE NAME", "temperature": 10.1, "humidity": 12.34}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [0, 0]}, "properties": {"mac": "DEVICE_MAC2", "name": "DEVICE NAME", "temperature": 10.1, "humidity": 12.34}}]};
+            L.geoJSON(obj, {
+                onEachFeature: onEachFeature,
+                pointToLayer: hideMarker
+            }).addTo(clusterLayer);
+            map.addLayer(clusterLayer);
+
+            // console.log(obj);
             $("#message").html(JSON.stringify(obj));
-            // console.log(this.responseText);
         }
         else {
              $("#message").html(this.statusText);
         }
     };
+    clusterLayer.clearLayers()
     
 }
 
-// Creating cluster group
-var markers = L.markerClusterGroup();
-
 // Creating popup
-var room305 = new L.popup({autoPan: false}).setLatLng([-5, -30]).setContent("305").addTo(markers);
-var room307 = new L.popup().setLatLng([-20, -30]).setContent("307").addTo(markers);
-var room311 = new L.popup().setLatLng([-20, -45]).setContent("311").addTo(markers);
-var room325a = new L.popup().setLatLng([-5, -90]).setContent("325a").addTo(markers);
+var room305 = new L.popup().setLatLng([-5, -30]).setContent("305").addTo(clusterLayer);
+var room307 = new L.popup().setLatLng([-20, -30]).setContent("307").addTo(clusterLayer);
+var room311 = new L.popup().setLatLng([-20, -45]).setContent("311").addTo(clusterLayer);
+var room325a = new L.popup().setLatLng([-5, -90]).setContent("325a").addTo(clusterLayer);
 
-map.addLayer(markers);
+map.addLayer(clusterLayer);
+
+function onEachFeature(feature, layer) {
+
+    let customOptions = {
+        'maxWidth': 'auto',
+        'minWidth' : 'auto',
+        'closeButton': false,
+        'autoClose': false 
+    }
+    // does this feature have a property named temperatyre and humidity?
+    if (feature.properties) {
+        layer.bindPopup(feature.properties.temperature.toString() + "°<br>" + feature.properties.humidity.toString() +"%", customOptions).openPopup();
+    }
+
+}
+
+function hideMarker(point, latlng) {
+    return L.marker(latlng, { icon: L.divIcon({popupAnchor:  [0, 0]}), opacity: 0});
+}
+
+// var geojsonFeature = {"type":"Feature","geometry":{"type":"Point","coordinates":[0,0]},"properties":{"mac":"DEVICE_MAC","name":"DEVICE NAME","temperature":10.1,"humidity":12.34}};
+// var geojsonFeature = {"type": "FeatureCollection", "features": [{"type":"Feature","geometry":{"type":"Point","coordinates":[0,0]},"properties":{"mac":"DEVICE_MAC1","name":"DEVICE NAME1","temperature":10,"humidity":12}}, {"type":"Feature","geometry":{"type":"Point","coordinates":[40,40]},"properties":{"mac":"DEVICE_MAC2","name":"DEVICE NAME2","temperature":16,"humidity":14}}]};
+
+// L.geoJSON(geojsonFeature, {
+//     onEachFeature: onEachFeature,
+//     pointToLayer: hideMarker
+// }).addTo(markers);
+// map.addLayer(markers);

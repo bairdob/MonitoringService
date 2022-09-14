@@ -8,7 +8,6 @@
           bottom: 0;
           width: 100%;
         }
-
     </style>
     
     <div id="map"></div>
@@ -17,6 +16,8 @@
     <script src="{{url_for('static', filename='scripts/maps.js')}}"></script>  
     <script>
         map.setView([0, 0], 2);
+        layerControl.removeLayer(floor3_dark, "floor3 dark");
+        layerControl.addBaseLayer(floor3_dark, "floor3 dark");
     </script>     
 {% endblock %}
 

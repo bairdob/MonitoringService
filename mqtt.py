@@ -4,9 +4,11 @@ import time
 from paho.mqtt import client as mqtt_client
 import requests
 
-broker = 'broker.emqx.io'
+broker = '192.168.1.39'
+# broker = 'broker.emqx.io'
 port = 1883
 topic = "/flask/mqtt"
+# topic = "flask/mqtt"
 # generate client ID with pub prefix randomly
 client_id = f'python-mqtt-{random.randint(0, 1000)}'
 username = ''
@@ -15,8 +17,8 @@ url = 'http://127.0.0.1:5000/publish'
 
 json_text = '{ "devices": [{ "mac": "MAC", "name": "305", "sensors": [{ "id": "T1", "value": 25.50, "unit": "°C"} ]} ]}'
 
-def genJson():
-    return '{ "devices": [{ "mac": "MAC", "name": "305", "sensors": [{ "id": "T1", "value": ' + str(round(random.uniform(20.0, 30.0), 2)) + ', "unit": "°C"} ]} ]}'
+def genJson(number):
+    return '{"type":"Feature","geometry":{"type":"Point","coordinates":['+ str(random.randint(0, 25)) +','+str(random.randint(0, 25)) +']},"properties":{"mac":"DEVICE_MAC'+str(random.randint(1,number))+'","name":"DEVICE NAME","temperature": '+ str(random.randint(20, 25)) + ',"humidity": ' + str(random.randint(20, 30)) + '}}'
 
 def connect_mqtt():
     def on_connect(client, userdata, flags, rc):
@@ -37,7 +39,7 @@ def publish(client):
     while True:
         time.sleep(1)
         # msg = f"temperature: {msg_count}"
-        msg = genJson()
+        msg = genJson(2)
         # requests.post(url, json = {"topic": "/flask/mqtt", "msg": msg})
         result = client.publish(topic, msg)
         # result: [0, 1]

@@ -3,9 +3,13 @@ from flask import redirect, render_template, url_for, request, jsonify
 
 from flask_mqtt import Mqtt
 
+import ast
+import geojson
+
 app = Flask(__name__)
 
-app.config['MQTT_BROKER_URL'] = 'broker.emqx.io'
+app.config['MQTT_BROKER_URL'] = '192.168.1.39'
+# app.config['MQTT_BROKER_URL'] = 'broker.emqx.io'
 app.config['MQTT_BROKER_PORT'] = 1883
 app.config['MQTT_USERNAME'] = ''  # Set this item when you need to verify username and password
 app.config['MQTT_PASSWORD'] = ''  # Set this item when you need to verify username and password
@@ -16,6 +20,8 @@ topic = '/flask/mqtt'
 mqtt_client = Mqtt(app)
 
 mqtt_json = ''
+devices = {}
+devices_features = ''
 
 @app.route('/')
 def index():
@@ -39,13 +45,15 @@ def handle_connect(client, userdata, flags, rc):
 
 @mqtt_client.on_message()
 def handle_mqtt_message(client, userdata, message):
-    data = dict(
-       topic=message.topic,
-       payload=message.payload.decode()
-    )
-    global mqtt_json
-    mqtt_json = data['payload']
-    print('Received message on topic: {topic} with payload: {payload}'.format(**data))
+    data = dict(topic=message.topic, payload=message.payload.decode())
+    # print('Received message on topic: {topic} with payload: {payload}'.format(**data))
+
+    global mqtt_json, devices, devices_features
+    device_geojson_feature = geojson.loads(data['payload'])
+    devices[device_geojson_feature.properties['mac']] = geojson.dumps(device_geojson_feature)
+
+    devices_features = ', '.join(list(devices.values()))
+    mqtt_json = '{"type": "FeatureCollection", "features": ['+devices_features+']}'
 
 @app.route('/publish', methods=['POST'])
 def publish_message():
@@ -56,8 +64,8 @@ def publish_message():
 @app.route('/json', methods = ['GET'])
 def json():
     global mqtt_json 
+    return str(mqtt_json)
 
-    return (mqtt_json)
 
 if __name__ == '__main__':
     app.run(debug=True)
