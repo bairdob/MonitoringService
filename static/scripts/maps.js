@@ -1,5 +1,5 @@
 // create tiles 
-var floor3 = L.tileLayer('static/maps/floor3/{z}/{x}/{y}.png', {
+var floor3 = L.tileLayer('http://127.0.0.1:9999/Users/bair/{z}/{x}/{y}.png', {
 	minZoom: 1,
 	maxZoom: 4,
 	// noWrap: true,
@@ -38,7 +38,7 @@ map.on('layeradd', function(event) {
 // Creating cluster group
 var clusterLayer = L.markerClusterGroup();
 
-var intervalID = setInterval(update_message,1000);
+var intervalID = setInterval(update_message, 1000);
 
 function update_message(event){    
     let url = 'http://' + window.location.host + '/json';
@@ -57,7 +57,7 @@ function update_message(event){
             }).addTo(clusterLayer);
             map.addLayer(clusterLayer);
 
-            // console.log(obj);
+            console.log(obj);
             $("#message").html(JSON.stringify(obj));
         }
         else {
@@ -69,10 +69,10 @@ function update_message(event){
 }
 
 // Creating popup
-var room305 = new L.popup().setLatLng([-5, -30]).setContent("305").addTo(clusterLayer);
+var room305 = new L.popup().setLatLng([-5, -30]).setContent("22°<br>33%").addTo(clusterLayer);
 var room307 = new L.popup().setLatLng([-20, -30]).setContent("307").addTo(clusterLayer);
 var room311 = new L.popup().setLatLng([-20, -45]).setContent("311").addTo(clusterLayer);
-var room325a = new L.popup().setLatLng([-5, -90]).setContent("325a").addTo(clusterLayer);
+var room325a = new L.popup().setLatLng([-5, -90]).setContent("22°<br>33%").addTo(clusterLayer);
 
 map.addLayer(clusterLayer);
 

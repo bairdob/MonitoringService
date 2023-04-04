@@ -18,7 +18,7 @@ url = 'http://127.0.0.1:5000/publish'
 json_text = '{ "devices": [{ "mac": "MAC", "name": "305", "sensors": [{ "id": "T1", "value": 25.50, "unit": "°C"} ]} ]}'
 
 def genJson(number):
-    return '{"type":"Feature","geometry":{"type":"Point","coordinates":['+ str(random.randint(0, 25)) +','+str(random.randint(0, 25)) +']},"properties":{"mac":"DEVICE_MAC'+str(random.randint(1,number))+'","name":"DEVICE NAME","temperature": '+ str(random.randint(20, 25)) + ',"humidity": ' + str(random.randint(20, 30)) + '}}'
+    return '{"type":"Feature","geometry":{"type":"Point","coordinates":['+ str(random.randint(0, 25)) +','+str(random.randint(0, 25)) +']},"properties":{"mac":"DEVICE_MAC1'+str(random.randint(1,number))+'","name":"DEVICE NAME","temperature": '+ str(random.randint(20, 25)) + ',"humidity": ' + str(random.randint(20, 30)) + '}}'
 
 def connect_mqtt():
     def on_connect(client, userdata, flags, rc):

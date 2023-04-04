@@ -3,8 +3,8 @@ from flask import redirect, render_template, url_for, request, jsonify
 
 from flask_mqtt import Mqtt
 
-import ast
 import geojson
+from datetime import datetime
 
 app = Flask(__name__)
 
@@ -38,7 +38,7 @@ def mapsFull() -> 'html':
 @mqtt_client.on_connect()
 def handle_connect(client, userdata, flags, rc):
     if rc == 0:
-       print('Connected successfully')
+       print('Connected to MQTT Broker {}'.format(app.config['MQTT_BROKER_URL']))
        mqtt_client.subscribe(topic) # subscribe topic
     else:
        print('Bad connection. Code:', rc)
@@ -51,6 +51,7 @@ def handle_mqtt_message(client, userdata, message):
     global mqtt_json, devices, devices_features
     device_geojson_feature = geojson.loads(data['payload'])
     devices[device_geojson_feature.properties['mac']] = geojson.dumps(device_geojson_feature)
+    devices['timestamp'] = str(datetime.timestamp(datetime.now()))
 
     devices_features = ', '.join(list(devices.values()))
     mqtt_json = '{"type": "FeatureCollection", "features": ['+devices_features+']}'

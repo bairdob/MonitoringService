@@ -6,9 +6,11 @@
 
 #define WIFI_SSID "Keenetic-3556"
 #define WIFI_PASSWORD "bair457589"
+//#define WIFI_SSID "DESKTOP-HCKPGPM 7385"
+//#define WIFI_PASSWORD "5437/I4c"
 
 // Raspberri Pi Mosquitto MQTT Broker
-#define MQTT_HOST IPAddress(192, 168, 1, 39)
+#define MQTT_HOST IPAddress(192, 168, 1, 67)
 // For a cloud MQTT broker, type the domain name
 //#define MQTT_HOST "broker.emqx.io"
 #define MQTT_PORT 1883
@@ -39,7 +41,7 @@ int temp;
 int hum;
 
 // Variables to hold JSON
-String JSON_start = "{\"type\":\"Feature\",\"geometry\":{\"type\":\"Point\",\"coordinates\":[0,0]},\"properties\":{\"mac\":\"DEVICE_MAC\",\"name\":\"DEVICE_NAME\",\"temperature\":";
+String JSON_start = "{\"type\":\"Feature\",\"geometry\":{\"type\":\"Point\",\"coordinates\":[1,1]},\"properties\":{\"mac\":\"DEVICE_MAC\",\"name\":\"DEVICE_NAME\",\"temperature\":";
 String JSON_mid = ",\"humidity\":";
 String JSON_end = "}}";
 String JSON_result = "";
